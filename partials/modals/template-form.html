@@ -1,0 +1,15 @@
+<div id="templateModal" class="modal"><div class="modal-content"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="templateModalTitle">Neue Vorlage</h2><button onclick="hideTemplateModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="templateForm" onsubmit="saveTemplate(event)"><input type="hidden" id="templateId">
+<div class="grid grid-cols-1 gap-5">
+<div><label class="block text-gray-700 font-semibold mb-2">Name *</label><input type="text" id="templateName" required class="input" placeholder="z.B. Badezimmer-Renovierung"></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Beschreibung</label><textarea id="templateDescription" rows="2" class="input" placeholder="Optionale Beschreibung..."></textarea></div>
+<div>
+<div class="flex items-center justify-between mb-3"><label class="block text-gray-700 font-semibold">Positionen</label><button type="button" class="btn btn-secondary btn-sm" onclick="addTemplateServiceForm()">+ Leistung</button></div>
+<div id="templateServicesList"><p class="text-gray-400 text-sm text-center py-4 italic">Noch keine Positionen. Klicke auf &quot;+ Leistung&quot;.</p></div>
+<div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100"><span class="text-sm text-gray-500">Gesamtbetrag (Netto)</span><span id="templateServicesTotal" class="font-bold text-gray-800">0,00 EUR</span></div>
+<div id="templateFromNotice" class="hidden mt-2 text-xs text-cyan-700 bg-cyan-50 border border-cyan-200 rounded-lg px-3 py-2"></div>
+</div>
+</div>
+<div class="flex gap-3 mt-8"><button type="submit" class="btn btn-primary">Speichern</button><button type="button" onclick="hideTemplateModal()" class="btn btn-secondary">Abbrechen</button></div>
+</form></div></div></div>

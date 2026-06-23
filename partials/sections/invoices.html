@@ -1,0 +1,20 @@
+<div id="invoices" class="app-section">
+<div class="flex items-center justify-between mb-8"><div><h1 class="text-4xl font-bold text-gray-800 mb-2">Rechnungen</h1><p class="text-gray-600">Rechnungen verwalten</p></div></div>
+<div class="card mb-6">
+<div class="flex flex-wrap gap-3 mb-3">
+<input type="text" id="invoiceSearchInput" class="input" style="max-width:320px" placeholder="Rechnungen suchen..." oninput="renderInvoices()">
+<select id="invoiceObjectFilter" class="input" style="max-width:320px" onchange="renderInvoices()"><option value="all">Alle Objekte</option></select>
+<select id="invoiceStatusFilter" class="input" style="max-width:220px" onchange="renderInvoices()"><option value="all">Alle Status</option><option value="draft">Entwurf</option><option value="open">Offen</option><option value="partial">Teilbezahlt</option><option value="paid">Bezahlt</option><option value="storniert">Storniert</option><option value="overdue">Überfällig</option></select>
+</div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="text-xs text-gray-500 font-medium">Sortierung:</span>
+<button id="invSortNumAsc" onclick="setInvoiceSort('number','asc')" class="inv-sort-btn" title="Rechnungsnummer aufsteigend">Nr. ↑</button>
+<button id="invSortNumDesc" onclick="setInvoiceSort('number','desc')" class="inv-sort-btn" title="Rechnungsnummer absteigend">Nr. ↓</button>
+<button id="invSortDateAsc" onclick="setInvoiceSort('date','asc')" class="inv-sort-btn" title="Datum aufsteigend">Datum ↑</button>
+<button id="invSortDateDesc" onclick="setInvoiceSort('date','desc')" class="inv-sort-btn inv-sort-active" title="Datum absteigend">Datum ↓</button>
+</div>
+</div>
+<div class="card">
+<div id="invoicesList"><p class="text-gray-500 text-center py-12">Noch keine Rechnungen</p></div>
+</div>
+</div>

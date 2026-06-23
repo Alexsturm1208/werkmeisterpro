@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Werkmeister Pro</title>
+<link rel="icon" type="image/png" href="./assets/icon.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* PDF.js aus CDN laden (Web-Version – keine node_modules) */
+(function(){
+  window.__ensurePdfJs = async function(){
+    if(window.pdfjsLib && window.pdfjsLib.getDocument) return true;
+    return new Promise(function(resolve){
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js';
+      s.onload = function(){
+        try{
+          if(!window.pdfjsLib) window.pdfjsLib = window['pdfjs-dist/build/pdf'];
+          if(window.pdfjsLib && !window.pdfjsLib.GlobalWorkerOptions.workerSrc){
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+              'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js';
+          }
+        }catch(_){}
+        resolve(!!(window.pdfjsLib && window.pdfjsLib.getDocument));
+      };
+      s.onerror = function(){ resolve(false); };
+      document.head.appendChild(s);
+    });
+  };
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/main.css">
+<style>
+@keyframes wmSpin{to{transform:rotate(360deg)}}
+/* ── Dokumentvorlagen-Editor ────────────────────────── */
+#docTemplateEditorModal{position:fixed;inset:0;z-index:99000;display:none;background:rgba(0,0,0,.45);align-items:stretch}
+#docTemplateEditorModal .dt-inner{background:#fff;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden}
+#docTemplateEditorModal .dt-header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e5e7eb;background:#f8fafc;flex-shrink:0;flex-wrap:wrap}
+#docTemplateEditorModal .dt-body{display:flex;flex:1;overflow:hidden;min-height:0}
+#docTemplateEditorModal .dt-sidebar{width:210px;flex-shrink:0;border-right:1px solid #e5e7eb;overflow-y:auto;background:#f8fafc;padding:10px 6px}
+#docTemplateEditorModal .dt-editor-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#docTemplateEditorModal .dt-preview-wrap{width:46%;flex-shrink:0;border-left:1px solid #e5e7eb;display:flex;flex-direction:column;overflow:hidden}
+#docTemplateEditorModal .dt-col-label{font-size:11px;font-weight:700;color:#6b7280;padding:7px 10px;border-bottom:1px solid #e5e7eb;background:#fafafa;flex-shrink:0}
+#dtHtmlEditor{flex:1;width:100%;resize:none;border:none;outline:none;font-family:'Consolas','Courier New',monospace;font-size:11.5px;line-height:1.55;padding:12px;color:#1e293b;background:#fff;tab-size:2}
+#dtPreviewFrame{flex:1;border:none;background:#f0f2f5}
+.dt-ph-row{display:flex;flex-direction:column;gap:1px;padding:4px 6px;border-radius:5px;cursor:pointer;margin-bottom:1px;transition:background .12s}
+.dt-ph-row:hover{background:#dbeafe}
+.dt-ph-code{font-size:10px;font-family:monospace;color:#0369a1;font-weight:600}
+.dt-ph-lbl{font-size:9px;color:#6b7280;line-height:1.3}
+.dt-ph-html{display:inline-block;font-size:8px;background:#dbeafe;color:#1d4ed8;padding:0 3px;border-radius:2px;font-weight:700;margin-top:1px}
+</style>
+</head>
+<body>
+<div id="driveToast">&#9729;&#65039; In Google Drive gespeichert</div>
+
+<!-- GitHub Gist: Ladeoverlay -->
+<div id="gistLoadOverlay" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,0.97);z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:14px">
+  <div style="width:44px;height:44px;border:4px solid #e5e7eb;border-top-color:#2E5BA8;border-radius:50%;animation:wmSpin 0.8s linear infinite"></div>
+  <div style="font-size:15px;color:#1f2937;font-weight:600">Daten werden geladen&hellip;</div>
+</div>
+
+<!-- GitHub Gist: Speicher-Indikator oben rechts -->
+<div id="gistSaveStatus" style="display:none;position:fixed;top:14px;right:18px;z-index:9999;background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.08);align-items:center;gap:6px">
+  <span id="gistSaveIcon"></span><span id="gistSaveText"></span>
+</div>
+
+<!-- ── Login ──────────────────────────────────────────────────────────────── -->
+<div id="loginScreen" style="display:none;flex-direction:column">
+<div class="wm-login-container">
+<div class="wm-login-logo-wrap"><img id="loginLogoImg" alt="Logo" style="width:72px;height:72px;object-fit:contain;border-radius:50%"></div>
+<div class="wm-login-firma" id="loginFirmaName">Werkmeister Pro</div>
+<div class="wm-login-sub">Handwerker Software</div>
+<div class="wm-login-card">
+<h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Anmelden</h2>
+<form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4" autocomplete="off">
+<div id="loginLockMsg" class="wm-login-lock" style="display:none">Zu viele Versuche. Bitte warten: <strong><span id="loginLockCountdown">30</span>s</strong></div>
+<div>
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Benutzername</label>
+<input type="text" id="loginUsername" required class="input" placeholder="benutzername" autocomplete="username" style="text-transform:lowercase">
+</div>
+<div>
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Passwort</label>
+<div class="wm-pw-wrap">
+<input type="password" id="loginPassword" required class="input" placeholder="Passwort" autocomplete="current-password">
+<button type="button" class="wm-pw-eye" onclick="toggleLoginPw()" tabindex="-1" title="Passwort anzeigen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+</div>
+</div>
+<div id="loginError" class="hidden bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-semibold">Benutzername oder Passwort falsch</div>
+<button type="submit" id="loginSubmitBtn" class="btn btn-primary w-full text-base justify-center" style="padding:12px 16px">Anmelden</button>
+</form>
+</div>
+</div>
+</div>
+
+<!-- ── Registrierung ──────────────────────────────────────────────────────── -->
+<div id="registerCompanyModal" class="modal">
+<div class="modal-content" style="max-width:560px">
+<div class="p-8">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-bold">Registrieren</h2>
+<button onclick="hideRegisterCompanyModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+</div>
+<form id="registerCompanyForm" onsubmit="submitRegisterCompany(event)" class="space-y-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Firma *</label><input type="text" id="regCompanyName" required class="input" placeholder="Musterfirma GmbH"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Name *</label><input type="text" id="regOwnerName" required class="input" placeholder="Max Mustermann"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Straße und Hausnummer *</label><input type="text" id="regStreet" required class="input" placeholder="Musterstrasse 1"></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><label class="block text-gray-700 font-semibold mb-2 text-sm">PLZ *</label><input type="text" id="regZip" required class="input" placeholder="12345"></div><div class="md:col-span-2"><label class="block text-gray-700 font-semibold mb-2 text-sm">Ort *</label><input type="text" id="regCity" required class="input" placeholder="Musterstadt"></div></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail *</label><input type="email" id="regEmail" required class="input" placeholder="firma@beispiel.de"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Passwort *</label><input type="password" id="regPassword" required class="input" placeholder="Mindestens 8 Zeichen"></div>
+<div class="flex gap-3 pt-2">
+<button type="submit" class="btn btn-primary">Registrieren</button>
+<button type="button" onclick="hideRegisterCompanyModal()" class="btn btn-secondary">Abbrechen</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<!-- ── Pflicht-Passwort-Ändern ─────────────────────────────────────────────── -->
+<div id="mustChangePwModal" class="modal" style="display:none;z-index:10000">
+<div class="modal-content" style="max-width:440px"><div class="p-8" style="padding:32px">
+<div class="wm-must-change-header">
+<h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Passwort ändern</h2>
+<p>Bitte ändern Sie das Standard-Passwort, bevor Sie fortfahren.</p>
+</div>
+<form id="mustChangePwForm" onsubmit="saveMustChangePassword(event)" class="space-y-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Neues Passwort *</label>
+<div class="wm-pw-wrap"><input type="password" id="mustChangePwNew" required minlength="6" class="input" placeholder="Mindestens 6 Zeichen"><button type="button" class="wm-pw-eye" onclick="togglePwField('mustChangePwNew')" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Passwort wiederholen *</label>
+<div class="wm-pw-wrap"><input type="password" id="mustChangePwConfirm" required class="input" placeholder="Passwort wiederholen"><button type="button" class="wm-pw-eye" onclick="togglePwField('mustChangePwConfirm')" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+<div id="mustChangePwError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-semibold"></div>
+<button type="submit" class="btn btn-primary w-full">Passwort speichern &amp; fortfahren</button>
+</form>
+</div></div>
+</div>
+
+<!-- ── Haupt-App ──────────────────────────────────────────────────────────── -->
+<div id="mainApp" style="display:none">
+<button class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</button>
+<div id="mobile-overlay" onclick="toggleMobileMenu()" class="mobile-overlay"></div>
+<div id="mobile-bottom-backdrop" class="mobile-bottom-backdrop" onclick="toggleMobileMoreMenu(false)"></div>
+<div id="mobile-bottom-sheet" class="mobile-bottom-sheet">
+<div class="sheet-head"><h3>Mehr Funktionen</h3><button type="button" class="sheet-close" onclick="toggleMobileMoreMenu(false)">&times;</button></div>
+<div id="mobileMoreList" class="mobile-bottom-sheet-list"></div>
+</div>
+<div id="mobile-bottom-nav" class="mobile-bottom-nav">
+<button type="button" data-mobile-section="dashboard" onclick="showSection('dashboard')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Home</span></button>
+<button type="button" data-mobile-section="orders" onclick="showSection('orders')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>Aufträge</span></button>
+<button type="button" data-mobile-section="invoices" onclick="showSection('invoices')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></span><span>Rechn.</span></button>
+<button type="button" data-mobile-section="customers" onclick="showSection('customers')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Kunden</span></button>
+<button type="button" data-mobile-section="more" onclick="toggleMobileMoreMenu()"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></span><span>Mehr</span></button>
+</div>
+
+<!-- ── Sidebar / Navigation ───────────────────────────────────────────────── -->
+<div class="sidebar" id="sidebar">
+<div class="p-6 border-b border-gray-100 brand-override"><div class="flex items-center w-full"><img id="sidebarBrandLogoImg" alt="Werkmeister Pro" style="width:100%;height:auto;display:block"></div></div>
+<div class="wm-sidebar-user" id="sidebarUserInfo">
+<div class="wm-user-avatar" id="userAvatar">A</div>
+<div class="wm-user-info">
+<div class="wm-user-name" id="sidebarUserName">Administrator</div>
+<span class="wm-user-role-badge role-admin" id="sidebarUserRole">Admin</span>
+</div>
+</div>
+<nav class="py-4 pb-6" id="mainNav">
+<div class="nav-group-title">Übersicht</div>
+<div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><span>Dashboard</span></div>
+
+<div class="nav-group-title">Aufträge</div>
+<div class="nav-item" data-section="customers" onclick="showSection('customers',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Kunden</span></div>
+<div class="nav-item" data-section="articles" onclick="showSection('articles',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span><span>Artikel</span></div>
+<div class="nav-item" data-section="offers" onclick="showSection('offers',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span><span>Angebote</span></div>
+<div class="nav-item" data-section="templates" onclick="showSection('templates',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H8.5A2.5 2.5 0 0 0 6 4.5v15A2.5 2.5 0 0 0 8.5 22H17a2 2 0 0 0 2-2V7z"/><path d="M15 2v5h4"/><path d="M3 7.5v12A2.5 2.5 0 0 0 5.5 22H15"/></svg></span><span>Vorlagen</span></div>
+<div class="nav-item" data-section="orders" onclick="showSection('orders',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>Auftr&#228;ge</span></div>
+<div class="nav-item" data-section="appointments" onclick="showSection('appointments',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></span><span>Termine</span></div>
+
+<div class="nav-group-title">Finanzen</div>
+<div class="nav-item" data-section="invoices" onclick="showSection('invoices',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></span><span>Rechnungen</span></div>
+<div class="nav-item" data-section="expenses" onclick="showSection('expenses',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span><span>Ausgaben</span></div>
+<div class="nav-item" data-section="dunning" onclick="showSection('dunning',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Mahnungen</span></div>
+<div class="nav-item" data-section="tax" onclick="showSection('tax',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span><span>Steuerauswertung</span></div>
+
+<div class="nav-group-title">System</div>
+<div class="nav-item" data-section="settings" onclick="showSection('settings',event)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span><span>Einstellungen</span></div>
+<div class="nav-group-title">Ansicht</div>
+<div class="px-6 mt-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-semibold text-gray-600">White Back Ansicht</span>
+<label class="toggle-switch">
+<input id="whiteBackToggle" type="checkbox" onchange="toggleWhiteBack(this.checked)">
+<span class="toggle-slider"></span>
+</label>
+</div>
+</div>
+</nav>
+<div class="wm-sidebar-bottom">
+<button class="wm-logout-btn" onclick="handleLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> Abmelden</button>
+</div>
+</div><!-- end sidebar -->
+
+<!-- ── Hauptinhalt ────────────────────────────────────────────────────────── -->
+<div class="main-content">
+
+<div class="gsb" id="globalSearchBar">
+<div class="gsb-wrap">
+<div class="gsb-input-wrap">
+<span class="gsb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+<input id="globalSearchInput" class="gsb-input" type="text" placeholder="Auftrag, Rechnung, Kunde suchen..." autocomplete="off" oninput="globalSearch(this.value)" onkeydown="globalSearchKeydown(event)">
+<button class="gsb-clear" id="globalSearchClear" onclick="globalSearchClear()" tabindex="-1">&#10005;</button>
+</div>
+<div class="gsb-drop" id="globalSearchDrop"></div>
+</div>
+</div>
+
+<!-- Sections werden hier von loader.js injiziert -->
+<div id="app-sections"></div>
+
+</div><!-- end main-content -->
+
+<!-- Modals werden hier von loader.js injiziert -->
+<div id="app-modals"></div>
+
+</div><!-- end mainApp -->
+
+<div id="printRoot"></div>
+
+<!-- ── GitHub-Sync Hilfsfunktionen (Settings-Tab) ────────────────────────── -->
+<script>
+async function loadGistSettingsToForm(){
+  if(!window.electronAPI||!window.electronAPI.loadGistConfig)return;
+  var cfg=await window.electronAPI.loadGistConfig().catch(function(){return null});
+  document.getElementById('gistIdInput').value=(cfg&&cfg.gistId)||'';
+  document.getElementById('gistTokenInput').value=(cfg&&cfg.token)||'';
+  var r=document.getElementById('gistSettingsResult');
+  if(r)r.innerHTML='';
+}
+async function saveGistSettings(e){
+  e.preventDefault();
+  var id=document.getElementById('gistIdInput').value.trim();
+  var token=document.getElementById('gistTokenInput').value.trim();
+  var r=document.getElementById('gistSettingsResult');
+  if(!id||!token){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Bitte Gist ID und Token eingeben.</div>';return}
+  if(r)r.innerHTML='<div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm mt-3">Verbindung wird geprüft…</div>';
+  try{
+    var testResp=await fetch('https://api.github.com/gists/'+id,{method:'GET',headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','User-Agent':'WerkmeisterPro'}});
+    if(!testResp.ok){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3"><strong>Fehler '+testResp.status+':</strong> '+(testResp.status===401?'Token ungültig oder abgelaufen.':testResp.status===404?'Gist ID nicht gefunden.':'Verbindung fehlgeschlagen.')+'</div>';return}
+  }catch(err){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Netzwerkfehler: '+esc(String(err.message||err))+'</div>';return}
+  var res=await window.electronAPI.saveGistConfig({gistId:id,token:token}).catch(function(e){return{ok:false,error:String(e)}});
+  if(res&&res.ok){
+    if(window.electronAPI.reloadGistConfig)window.electronAPI.reloadGistConfig();
+    if(r)r.innerHTML='<div class="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm mt-3">✓ Verbindung erfolgreich – GitHub Sync ist aktiv.</div>';
+  }else{
+    if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Fehler beim Speichern: '+esc(String((res&&res.error)||'Unbekannt'))+'</div>';
+  }
+}
+async function pushLocalToGist(){
+  var r=document.getElementById('gistSettingsResult');
+  if(r)r.innerHTML='<div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm mt-3">Lade lokale Daten…</div>';
+  var localData=await window.electronAPI.loadLocalData().catch(function(){return null});
+  if(!localData){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Lokale Datei nicht gefunden oder leer.</div>';return}
+  var inv=Array.isArray(localData.invoices)?localData.invoices.length:0;
+  var ord=Array.isArray(localData.orders)?localData.orders.length:0;
+  var cust=Array.isArray(localData.customers)?localData.customers.length:0;
+  if(!await uiConfirm('Lokale Daten in den Gist hochladen?\n\nGefunden: '+inv+' Rechnungen, '+ord+' Aufträge, '+cust+' Kunden.\n\nDies überschreibt den Gist-Stand.','Hochladen'))return;
+  if(r)r.innerHTML='<div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm mt-3">Wird hochgeladen…</div>';
+  try{await saveData();}catch(e){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Fehler: '+esc(String(e.message||e))+'</div>';return}
+  if(r)r.innerHTML='<div class="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm mt-3">✓ Lokale Daten ('+inv+' Rechnungen, '+ord+' Aufträge, '+cust+' Kunden) wurden in den Gist hochgeladen.</div>';
+}
+async function loadFromGistNow(){
+  var r=document.getElementById('gistSettingsResult');
+  var cfg=await window.electronAPI.loadGistConfig().catch(function(){return null});
+  if(!cfg||!cfg.gistId||!cfg.token){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Bitte zuerst Gist ID und Token speichern.</div>';return}
+  if(r)r.innerHTML='<div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm mt-3">Lade Daten aus Gist…</div>';
+  try{
+    var resp=await fetch('https://api.github.com/gists/'+cfg.gistId,{method:'GET',headers:{'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json','User-Agent':'WerkmeisterPro'}});
+    if(!resp.ok){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Fehler '+resp.status+': Gist konnte nicht geladen werden.</div>';return}
+    var data=await resp.json();
+    var file=data.files&&data.files['daten.json'];
+    if(!file||!file.content){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Keine daten.json im Gist gefunden.</div>';return}
+    localStorage.setItem('wm_data',file.content);
+    if(r)r.innerHTML='<div class="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm mt-3">✓ Daten geladen! Die App wird jetzt neu gestartet…</div>';
+    setTimeout(function(){window.location.reload();},1200);
+  }catch(err){if(r)r.innerHTML='<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mt-3">Netzwerkfehler: '+esc(String(err.message||err))+'</div>';}
+}
+async function clearGistSettings(){
+  if(!await uiConfirm('GitHub Sync wirklich deaktivieren?','Deaktivieren'))return;
+  await window.electronAPI.saveGistConfig({gistId:'',token:''}).catch(function(){});
+  if(window.electronAPI.reloadGistConfig)window.electronAPI.reloadGistConfig();
+  document.getElementById('gistIdInput').value='';
+  document.getElementById('gistTokenInput').value='';
+  var r=document.getElementById('gistSettingsResult');
+  if(r)r.innerHTML='<div class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm mt-3">GitHub Sync deaktiviert. Daten werden nur lokal gespeichert.</div>';
+}
+</script>
+
+<!-- ── JS-Module ─────────────────────────────────────────────────────────── -->
+<!-- browser-api.js MUSS als erstes geladen werden – setzt window.electronAPI -->
+<script src="js/browser-api.js"></script>
+<script src="js/loader.js"></script>
+<script src="js/app.js"></script>
+<script src="js/data.js"></script>
+<script src="js/users.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/articles.js"></script>
+<script src="js/orders.js"></script>
+<script src="js/offers.js"></script>
+<script src="js/customers.js"></script>
+<script src="js/invoices.js"></script>
+<script src="js/expenses.js"></script>
+<script src="js/print.js"></script>
+<script src="js/email.js"></script>
+<script src="js/dunning.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/quickTemplates.js"></script>
+<script src="js/docTemplates.js"></script>
+<script src="js/ui.js"></script>
+
+<!-- ── Datensicherheit: Auto-Save + Fokusverlust-Save ────────────────────── -->
+<script>
+(function(){
+  setInterval(function(){
+    if(typeof saveData==='function')saveData();
+  }, 30000);
+  window.addEventListener('blur', function(){
+    if(typeof saveData==='function')saveData();
+  });
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState==='hidden' && typeof saveData==='function')saveData();
+  });
+})();
+</script>
+
+<!-- ── Speicher-Indikator + beforeunload ─────────────────────────────────── -->
+<script>
+(function(){
+  if(!window.electronAPI)return;
+
+  var statusEl = document.getElementById('gistSaveStatus');
+  var iconEl   = document.getElementById('gistSaveIcon');
+  var textEl   = document.getElementById('gistSaveText');
+  var hideTimer = null;
+
+  function showStatus(icon, text, autohide) {
+    if(!statusEl)return;
+    if(iconEl)iconEl.textContent = icon;
+    if(textEl)textEl.textContent = text;
+    statusEl.style.display = 'flex';
+    if(hideTimer)clearTimeout(hideTimer);
+    if(autohide)hideTimer = setTimeout(function(){ if(statusEl)statusEl.style.display='none'; }, 3000);
+  }
+
+  window.electronAPI.onSaveStatus(function(s){
+    if(s==='saving'||s==='pending') showStatus('🟡', s==='saving'?'Speichert…':'Ausstehend…', false);
+    else if(s==='saved')            showStatus('🟢', 'Gespeichert', true);
+    else if(s==='error')            showStatus('🔴', 'Fehler beim Speichern', false);
+  });
+
+  window.addEventListener('beforeunload', function(){
+    try{ if(typeof flushPendingSave==='function') flushPendingSave(); }catch(e){}
+    if(window.electronAPI && window.electronAPI.flushSave) window.electronAPI.flushSave();
+  });
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState==='hidden'){
+      try{ if(typeof flushPendingSave==='function') flushPendingSave(); }catch(e){}
+    }
+  });
+})();
+</script>
+
+<!-- ── App-Initialisierung (wartet auf Partials) ─────────────────────────── -->
+<script>
+(function(){
+  function showLogin(){
+    try{document.getElementById('loginScreen').style.display='flex';}catch(e){}
+  }
+  function initApp(){
+    if(typeof checkAuth!=='function'){
+      console.error('FATAL: checkAuth ist nicht definiert – app.js konnte nicht geladen werden');
+      showLogin();
+      return;
+    }
+    try{
+      var p=checkAuth();
+      if(p&&typeof p.then==='function'){
+        p.catch(function(e){
+          console.error('checkAuth Promise abgelehnt:',e);
+          showLogin();
+        });
+      }
+    }catch(e){
+      console.error('checkAuth Fehler:',e);
+      showLogin();
+    }
+    setTimeout(function(){
+      var ma=document.getElementById('mainApp');
+      var mainVisible=ma&&ma.style.display&&ma.style.display!=='none';
+      if(!mainVisible){
+        console.warn('Fallback: Zeige Login nach Timeout');
+        showLogin();
+      }
+    },4000);
+  }
+
+  if(window.__partialsLoaded){
+    initApp();
+  }else{
+    document.addEventListener('app:partials-loaded', initApp, {once:true});
+  }
+})();
+</script>
+
+</body>
+</html>

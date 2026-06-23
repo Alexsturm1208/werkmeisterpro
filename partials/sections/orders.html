@@ -1,0 +1,5 @@
+<div id="orders" class="app-section">
+<div class="flex items-center justify-between mb-8"><div><h1 class="text-4xl font-bold text-gray-800 mb-2">Auftr&#228;ge</h1><p class="text-gray-600">Verwalte deine Auftr&#228;ge</p></div><button class="btn btn-primary" onclick="showOrderModal()">+ Neuer Auftrag</button></div>
+<div class="card mb-6"><div class="flex flex-wrap gap-3"><input type="text" id="ordersSearchInput" class="input" style="max-width:320px" placeholder="Auftr&#228;ge suchen..." oninput="renderOrders()"><select id="ordersObjectFilter" class="input" style="max-width:320px" onchange="renderOrders()"><option value="all">Alle Objekte</option></select></div></div>
+<div class="card"><div id="ordersList"><p class="text-gray-500 text-center py-12">Noch keine Auftr&#228;ge</p></div></div>
+</div>

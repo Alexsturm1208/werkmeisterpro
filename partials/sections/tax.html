@@ -1,0 +1,88 @@
+<div id="tax" class="app-section">
+	<h1 class="text-4xl font-bold text-gray-800 mb-8">Steuerauswertung</h1>
+	<div class="card">
+		<div class="tax-mini-nav">
+			<button type="button" class="tax-tab-btn active" data-tax-tab-btn="report" onclick="setTaxTab('report')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>Auswertung</button>
+			<button type="button" class="tax-tab-btn" data-tax-tab-btn="export" onclick="setTaxTab('export')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>Export</button>
+		</div>
+
+		<div class="tax-tab-panel" data-tax-tab="report">
+			<div class="mb-8">
+				<form class="flex flex-wrap gap-4 items-end" onsubmit="event.preventDefault();renderTaxReport()">
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2 text-sm">Jahr</label>
+						<select id="taxYearSelect" class="input"></select>
+					</div>
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2 text-sm">Monat</label>
+						<select id="taxMonthSelect" class="input">
+							<option value="all">Gesamt</option>
+							<option value="1">Januar</option>
+							<option value="2">Februar</option>
+							<option value="3">März</option>
+							<option value="4">April</option>
+							<option value="5">Mai</option>
+							<option value="6">Juni</option>
+							<option value="7">Juli</option>
+							<option value="8">August</option>
+							<option value="9">September</option>
+							<option value="10">Oktober</option>
+							<option value="11">November</option>
+							<option value="12">Dezember</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-primary">Auswerten</button>
+				</form>
+			</div>
+			<div id="taxReportResult">
+				<div class="text-gray-500 text-center py-12">Bitte Jahr und ggf. Monat wählen und auf "Auswerten" klicken.</div>
+			</div>
+		</div>
+
+		<div class="tax-tab-panel hidden" data-tax-tab="export">
+			<div class="mb-6">
+				<div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2 text-sm">Jahr</label>
+						<select id="taxExportYear" class="input"></select>
+					</div>
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2 text-sm">Monat</label>
+						<select id="taxExportMonth" class="input">
+							<option value="all">Gesamt</option>
+							<option value="1">Januar</option>
+							<option value="2">Februar</option>
+							<option value="3">März</option>
+							<option value="4">April</option>
+							<option value="5">Mai</option>
+							<option value="6">Juni</option>
+							<option value="7">Juli</option>
+							<option value="8">August</option>
+							<option value="9">September</option>
+							<option value="10">Oktober</option>
+							<option value="11">November</option>
+							<option value="12">Dezember</option>
+						</select>
+					</div>
+					<div>
+						<label class="block text-gray-700 font-semibold mb-2 text-sm">Status</label>
+						<select id="taxExportStatus" class="input">
+							<option value="final">Nur final</option>
+							<option value="all">Alle</option>
+							<option value="open">Offen</option>
+							<option value="paid">Bezahlt</option>
+							<option value="storniert">Storniert</option>
+							<option value="draft">Entwurf</option>
+						</select>
+					</div>
+					<div class="flex gap-2">
+						<button type="button" class="btn btn-secondary" onclick="exportTaxInvoicesCsv()">Excel Export</button>
+						<button type="button" class="btn btn-primary" onclick="exportTaxInvoicesPdf()">PDF Export</button>
+					</div>
+				</div>
+				<div id="taxExportHint" class="text-xs text-gray-500 mt-3">Exportiert die gefilterte Rechnungsliste als CSV (Excel) oder PDF.</div>
+			</div>
+			<div id="taxExportPreview" class="text-gray-500 text-center py-12">Wähle Filter und exportiere.</div>
+		</div>
+	</div>
+</div>

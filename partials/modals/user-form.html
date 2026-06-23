@@ -1,0 +1,31 @@
+<div id="userModal" class="modal"><div class="modal-content" style="max-width:520px"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="userModalTitle">Neuer Benutzer</h2><button onclick="hideUserModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="userForm" onsubmit="saveUser(event)"><input type="hidden" id="editUserId">
+<div class="grid grid-cols-1 gap-4">
+<div class="grid grid-cols-2 gap-3">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Vorname *</label><input type="text" id="userFirstName" required class="input" placeholder="Thomas"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Nachname *</label><input type="text" id="userLastName" required class="input" placeholder="Muster"></div>
+</div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Benutzername * <span class="text-gray-400 font-normal">(nur Kleinbuchstaben)</span></label><input type="text" id="userUsername" required class="input" placeholder="thomas.muster" pattern="[a-z0-9._-]+" title="Nur Kleinbuchstaben, Ziffern, Punkte, Bindestriche" oninput="this.value=this.value.toLowerCase().replace(/\s/g,'')"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Rolle *</label>
+<select id="userRole" class="input" onchange="applyRoleDefaults()">
+<option value="mitarbeiter">Mitarbeiter</option>
+<option value="buchhaltung">Buchhaltung</option>
+<option value="admin">Administrator</option>
+</select>
+<p class="text-xs text-gray-400 mt-1" id="userRoleHint">Mitarbeiter: Aufträge, Kunden, Angebote – keine Rechnungen</p>
+</div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm" id="userPasswordLabel">Passwort * <span class="text-gray-400 font-normal">(min. 6 Zeichen)</span></label>
+<div class="wm-pw-wrap"><input type="password" id="userPassword" class="input" placeholder="Passwort"><button type="button" class="wm-pw-eye" onclick="togglePwField('userPassword')" tabindex="-1">&#128065;</button></div>
+<p class="text-xs text-gray-400 mt-1" id="userPasswordHint">Mindestens 6 Zeichen</p></div>
+<div id="userPwConfirmWrap"><label class="block text-gray-700 font-semibold mb-2 text-sm">Passwort wiederholen *</label>
+<div class="wm-pw-wrap"><input type="password" id="userPasswordConfirm" class="input" placeholder="Passwort wiederholen"><button type="button" class="wm-pw-eye" onclick="togglePwField('userPasswordConfirm')" tabindex="-1">&#128065;</button></div></div>
+<div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
+<div><span class="font-semibold text-gray-700 text-sm">Benutzer aktiv</span><p class="text-xs text-gray-400 mt-0.5">Inaktive Benutzer können sich nicht anmelden</p></div>
+<label class="toggle-switch"><input type="checkbox" id="userActive" checked><span class="toggle-slider"></span></label>
+</div>
+<div id="userPwChangeHint" class="hidden p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-800 text-xs">Beim nächsten Login muss der Benutzer das Passwort ändern</div>
+</div>
+<div id="userModalError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mt-3"></div>
+<div class="flex gap-3 mt-6"><button type="submit" class="btn btn-primary">Speichern</button><button type="button" onclick="hideUserModal()" class="btn btn-secondary">Abbrechen</button></div>
+</form></div></div></div>

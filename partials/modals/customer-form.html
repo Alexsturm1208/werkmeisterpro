@@ -1,0 +1,22 @@
+<div id="customerModal" class="modal"><div class="modal-content"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="customerModalTitle">Neuer Kunde</h2><button onclick="hideCustomerModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId">
+<div class="grid grid-cols-1 gap-5">
+<div><label class="block text-gray-700 font-semibold mb-2">Typ</label><div class="flex gap-4"><label class="flex items-center cursor-pointer"><input type="radio" name="customerType" value="privat" checked class="mr-2" onchange="toggleCompanyField()"><span>Privat</span></label><label class="flex items-center cursor-pointer"><input type="radio" name="customerType" value="firma" class="mr-2" onchange="toggleCompanyField()"><span>Firma</span></label></div></div>
+<div id="companyFieldWrapper" class="hidden"><label class="block text-gray-700 font-semibold mb-2">Firma *</label><input type="text" id="customerCompany" class="input"></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div><label class="block text-gray-700 font-semibold mb-2">Anrede</label><select id="customerSalutation" class="input"><option value="">--</option><option>Herr</option><option>Frau</option></select></div><div><label class="block text-gray-700 font-semibold mb-2" id="lblFirstName">Vorname *</label><input type="text" id="customerFirstName" required class="input"></div><div><label class="block text-gray-700 font-semibold mb-2" id="lblLastName">Nachname *</label><input type="text" id="customerLastName" required class="input"></div></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="md:col-span-3"><label class="block text-gray-700 font-semibold mb-2">Stra&szlig;e</label><input type="text" id="customerStreet" class="input"></div><div><label class="block text-gray-700 font-semibold mb-2">PLZ</label><input type="text" id="customerZip" class="input"></div><div class="md:col-span-2"><label class="block text-gray-700 font-semibold mb-2">Ort</label><input type="text" id="customerCity" class="input"></div></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-gray-700 font-semibold mb-2">Telefon</label><input type="tel" id="customerPhone" class="input"></div><div><label class="block text-gray-700 font-semibold mb-2">Mobil</label><input type="tel" id="customerMobile" class="input"></div></div>
+<div><label class="block text-gray-700 font-semibold mb-2">E-Mail</label><input type="email" id="customerEmail" class="input"></div>
+<details class="border border-gray-200 rounded-xl p-4 bg-gray-50/50"><summary class="cursor-pointer font-semibold text-gray-700 text-sm select-none">E-Rechnung &amp; Gesch&auml;ftsdaten</summary>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">USt-IdNr <span class="text-gray-400 font-normal">(B2B)</span></label><input type="text" id="customerUstId" class="input" placeholder="DE123456789"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Kundennummer</label><input type="text" id="customerKundennummer" class="input" placeholder="K-001"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">K&auml;ufer-Referenz <span class="text-gray-400 font-normal">(BT-10)</span></label><input type="text" id="customerBuyerReference" class="input" placeholder="Pflicht f&uuml;r E-Rechnung"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Leitweg-ID <span class="text-gray-400 font-normal">(B2G)</span></label><input type="text" id="customerLeitwegId" class="input" placeholder="04011000-12345-67"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">L&auml;ndercode</label><input type="text" id="customerCountryCode" class="input" placeholder="DE" maxlength="2" value="DE"></div>
+</div></details>
+<div><label class="block text-gray-700 font-semibold mb-2">Notizen</label><textarea id="customerNotes" rows="2" class="input"></textarea></div>
+</div>
+<div class="flex gap-3 mt-8"><button type="submit" class="btn btn-primary">Speichern</button><button type="button" onclick="hideCustomerModal()" class="btn btn-secondary">Abbrechen</button></div>
+</form></div></div></div>

@@ -1,0 +1,44 @@
+<div id="docTemplateEditorModal">
+  <div class="dt-inner">
+    <!-- Header -->
+    <div class="dt-header">
+      <span style="font-size:15px;font-weight:700;color:#1f2937;margin-right:4px">&#127912; Dokumentvorlagen</span>
+      <span id="dtCustomBadge" style="display:none;background:#f0fdf4;color:#16a34a;border:1px solid #86efac;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">Eigene Vorlage aktiv</span>
+      <!-- Typ-Auswahl -->
+      <div style="display:flex;gap:5px;margin-left:6px">
+        <button id="dtTypeBtn_offer"   class="btn btn-primary btn-sm"   onclick="_dtSelectType('offer')">Angebot</button>
+        <button id="dtTypeBtn_invoice" class="btn btn-secondary btn-sm" onclick="_dtSelectType('invoice')">Rechnung</button>
+        <button id="dtTypeBtn_dunning" class="btn btn-secondary btn-sm" onclick="_dtSelectType('dunning')">Mahnung</button>
+        <button id="dtTypeBtn_order"   class="btn btn-secondary btn-sm" onclick="_dtSelectType('order')">Auftrag</button>
+      </div>
+      <!-- Aktionen -->
+      <div style="display:flex;gap:7px;margin-left:auto">
+        <button id="dtResetBtn"  class="btn btn-secondary btn-sm" onclick="dtResetTemplate()" style="display:none">&#8635; Standard</button>
+        <button class="btn btn-secondary btn-sm" onclick="dtFormatHtml()" title="HTML-Einrückung bereinigen">&#8644; Formatieren</button>
+        <button id="dtSaveBtn"   class="btn btn-primary btn-sm"   onclick="dtSaveTemplate()">&#10003; Speichern</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeTemplateEditor()">&#10005; Schlie&szlig;en</button>
+      </div>
+    </div>
+    <!-- 3-Spalten-Layout -->
+    <div class="dt-body">
+      <!-- Links: Platzhalter-Liste -->
+      <div class="dt-sidebar">
+        <div style="font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.05em;padding:0 4px;margin-bottom:6px">Platzhalter einfügen</div>
+        <div id="dtPlaceholderList"></div>
+      </div>
+      <!-- Mitte: HTML-Editor -->
+      <div class="dt-editor-wrap">
+        <div class="dt-col-label">HTML-Vorlage &mdash; Platzhalter: <code style="font-size:10px;color:#7c3aed">{{name}}</code></div>
+        <textarea id="dtHtmlEditor" spellcheck="false" autocorrect="off" autocapitalize="off"
+          oninput="_dtUpdatePreview()"
+          onkeydown="if(event.key==='Tab'){event.preventDefault();var s=this.selectionStart,e=this.selectionEnd;this.value=this.value.slice(0,s)+'  '+this.value.slice(e);this.selectionStart=this.selectionEnd=s+2}"
+        ></textarea>
+      </div>
+      <!-- Rechts: Vorschau -->
+      <div class="dt-preview-wrap">
+        <div class="dt-col-label">Vorschau (Beispieldaten, 72% Zoom)</div>
+        <iframe id="dtPreviewFrame" sandbox="allow-same-origin"></iframe>
+      </div>
+    </div>
+  </div>
+</div>

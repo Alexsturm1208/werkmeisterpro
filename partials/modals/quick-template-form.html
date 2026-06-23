@@ -1,0 +1,13 @@
+<div id="quickTemplateModal" class="modal"><div class="modal-content" style="max-width:560px"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="quickTemplateModalTitle">Neuer Baustein</h2><button onclick="hideQuickTemplateModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="quickTemplateForm" onsubmit="saveQuickTemplate(event)"><input type="hidden" id="quickTemplateId">
+<div class="grid grid-cols-1 gap-5">
+<div><label class="block text-gray-700 font-semibold mb-2">Kategorie *</label><input type="text" id="quickTemplateCategory" required class="input" placeholder="z.B. Malerarbeiten"></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Titel *</label><input type="text" id="quickTemplateTitle" required class="input" placeholder="z.B. Wände streichen (1x)"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2">Kostenart</label><select id="quickTemplateCostType" class="input"><option value="position">Position</option><option value="material">Material</option></select></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Einheit</label><input type="text" id="quickTemplateUnit" class="input" placeholder="Pauschal"></div>
+</div>
+</div>
+<div class="flex gap-3 mt-8"><button type="submit" class="btn btn-primary">Speichern</button><button type="button" onclick="hideQuickTemplateModal()" class="btn btn-secondary">Abbrechen</button></div>
+</form></div></div></div>

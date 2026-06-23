@@ -1,0 +1,29 @@
+<div id="invoiceDetailModal" style="display:none" onclick="if(event.target===this)closeInvoiceDetailModal()" class="fixed inset-0 z-[200] flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-6 px-4">
+<div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden">
+<div class="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 px-6 py-4 bg-white border-b border-gray-100">
+<div class="flex items-center gap-3 min-w-0"><h2 class="text-xl font-bold text-gray-800 truncate" id="invDetailTitle">Rechnung</h2><span id="invDetailBadge"></span></div>
+<div class="flex flex-wrap items-center gap-2" id="invDetailActions"></div>
+</div>
+<div id="invoiceDetailContent" class="p-6"></div>
+</div>
+</div>
+
+<div id="orderDetailModal" style="display:none" onclick="if(event.target===this)closeOrderDetailModal()" class="fixed inset-0 z-[200] flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-6 px-4">
+<div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden">
+<div class="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 px-6 py-4 bg-white border-b border-gray-100">
+<div class="flex items-center gap-3 min-w-0"><h2 class="text-xl font-bold text-gray-800 truncate" id="orderDetailTitle">Auftrag</h2><span id="orderDetailBadge"></span></div>
+<div class="flex flex-wrap items-center gap-2" id="orderDetailActions"></div>
+</div>
+<div id="orderDetailContent" class="p-6"></div>
+</div>
+</div>
+
+<div id="offerDetailModal" style="display:none" onclick="if(event.target===this)closeOfferDetailModal()" class="fixed inset-0 z-[200] flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-6 px-4">
+<div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden">
+<div class="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 px-6 py-4 bg-white border-b border-gray-100">
+<div class="flex items-center gap-3 min-w-0"><h2 class="text-xl font-bold text-gray-800 truncate" id="offerDetailTitle">Angebot</h2><span id="offerDetailBadge"></span></div>
+<div class="flex flex-wrap items-center gap-2" id="offerDetailActions"></div>
+</div>
+<div id="offerDetailContent" class="p-6"></div>
+</div>
+</div>

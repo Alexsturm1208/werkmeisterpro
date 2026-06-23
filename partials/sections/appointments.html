@@ -1,0 +1,11 @@
+<div id="appointments" class="app-section">
+<div class="flex items-center justify-between mb-8"><div><h1 class="text-4xl font-bold text-gray-800 mb-2">Termine</h1><p class="text-gray-600">Verwalte deine Termine &amp; synchronisiere mit dem Kalender</p></div><button class="btn btn-primary" onclick="showAppointmentModal()">+ Neuer Termin</button></div>
+<div id="apptReminderBanner"></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">Heute</div><div class="stat-number"><span id="stat-appt-today">0</span></div><div class="stat-trend">Termine</div></div>
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">Diese Woche</div><div class="stat-number"><span id="stat-appt-week">0</span></div><div class="stat-trend">Termine</div></div>
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">Gesamt</div><div class="stat-number"><span id="stat-appt-total">0</span></div><div class="stat-trend">Termine</div></div>
+</div>
+<div class="card mb-6"><div class="flex items-center gap-4 flex-wrap"><input type="text" id="apptSearchInput" class="input" style="max-width:300px" placeholder="Termine suchen..." oninput="renderAppointments()"><select id="apptFilterTime" class="input" style="max-width:200px" onchange="renderAppointments()"><option value="upcoming">Kommende</option><option value="today">Heute</option><option value="week">Diese Woche</option><option value="month">Dieser Monat</option><option value="past">Vergangene</option><option value="all">Alle</option></select></div></div>
+<div class="card"><div id="appointmentsList"><p class="text-gray-500 text-center py-12">Noch keine Termine</p></div></div>
+</div>

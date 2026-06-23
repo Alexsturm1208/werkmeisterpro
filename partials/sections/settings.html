@@ -1,0 +1,337 @@
+<div id="settings" class="app-section">
+<h1 class="text-4xl font-bold text-gray-800 mb-1">Einstellungen</h1><p class="text-gray-600 mb-3">Firmendaten, Benutzerverwaltung &amp; Berechtigungen</p>
+<div class="settings-mini-nav">
+<button type="button" class="settings-tab-btn active" data-settings-tab-btn="company" onclick="setSettingsTab('company')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 7h.01M16 7h.01M8 11h.01M16 11h.01"/></svg></span>Firmendaten</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="letter" onclick="setSettingsTab('letter')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg></span>Briefpapier</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="users" onclick="setSettingsTab('users')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Benutzer</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="password" onclick="setSettingsTab('password')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>Passwort</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="update" onclick="setSettingsTab('update')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/><polyline points="3 21 3 16 8 16"/></svg></span>Update</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="import" onclick="setSettingsTab('import')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Import</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="datenpfad" onclick="setSettingsTab('datenpfad')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>Datenspeicher</button>
+<button type="button" id="emailSettingsTabBtn" class="settings-tab-btn" style="display:none" data-settings-tab-btn="email" onclick="setSettingsTab('email');loadSmtpSettingsToForm()"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>E-Mail</button>
+<button type="button" class="settings-tab-btn" data-settings-tab-btn="gitsync" onclick="setSettingsTab('gitsync');loadGistSettingsToForm()"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8 7 7 0 0 0-13.6 2.3A4.5 4.5 0 0 0 4.5 19z"/></svg></span>GitHub Sync</button>
+<button type="button" class="settings-tab-btn" onclick="openTemplateEditor('offer')"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5"/><polyline points="14 2 14 8 20 8"/><path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z"/></svg></span>Dokumentvorlagen</button>
+</div>
+
+<div id="settingsAdminArea">
+
+<!-- FIRMENSTAMMDATEN -->
+<div class="card mb-6 settings-tab-panel" data-settings-tab="company">
+<div class="settings-flat-head" id="settingsAnchorCompany"><h2>Firmendaten &amp; Dokumente</h2><span class="badge badge-cyan">Aktiv</span></div>
+<div id="settingsCompanyBody" class="settings-panel-body">
+<p class="settings-section-sub">Alle Angaben für Rechnungen, Angebote, Mahnungen und E-Mail-Vorlagen.</p>
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold text-gray-800">Firmenstammdaten</h2><span class="badge badge-cyan">&#167;14 UStG</span></div>
+<p class="text-gray-500 text-sm mb-6">Diese Daten erscheinen automatisch auf allen Rechnungen und PDFs.</p>
+<form id="companyForm" onsubmit="saveCompanySettings(event)">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-4">
+<h3 class="font-bold text-gray-700 border-b border-gray-200 pb-2">Unternehmen</h3>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Firmenname *</label><input type="text" id="compFirma" required class="input" placeholder="Musterfirma GmbH"></div>
+<div>
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Unternehmenslogo (Briefkopf)</label>
+<input type="file" id="compLogoFile" accept="image/png,image/jpeg,image/webp" class="input" onchange="handleCompanyLogoUpload(event)">
+<div class="mt-2 flex items-center gap-3">
+<img id="compLogoPreview" class="company-logo-preview hidden" alt="Logo Vorschau">
+<button type="button" id="compLogoClearBtn" class="btn btn-secondary btn-sm hidden" onclick="clearCompanyLogo()">Logo entfernen</button>
+</div>
+</div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Rechtsform</label><input type="text" id="compRechtsform" class="input" placeholder="GmbH, GbR, Einzelunternehmen..."></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Geschäftsführer / Inhaber</label><input type="text" id="compInhaber" class="input" placeholder="Max Mustermann"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Handelsregister</label><input type="text" id="compHandelsregister" class="input" placeholder="HRB 12345, AG Musterstadt"></div>
+</div>
+<div class="space-y-4">
+<h3 class="font-bold text-gray-700 border-b border-gray-200 pb-2">Adresse</h3>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Straße + Hausnr. *</label><input type="text" id="compStrasse" required class="input" placeholder="Musterstraße 1"></div>
+<div class="grid grid-cols-3 gap-3"><div><label class="block text-gray-700 font-semibold mb-2 text-sm">PLZ *</label><input type="text" id="compPLZ" required class="input" placeholder="12345"></div><div class="col-span-2"><label class="block text-gray-700 font-semibold mb-2 text-sm">Ort *</label><input type="text" id="compOrt" required class="input" placeholder="Musterstadt"></div></div>
+</div>
+<div class="space-y-4">
+<h3 class="font-bold text-gray-700 border-b border-gray-200 pb-2">Kontakt</h3>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Telefon</label><input type="tel" id="compTelefon" class="input" placeholder="0123 456789"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Mobil</label><input type="tel" id="compMobil" class="input" placeholder="0170 1234567"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail</label><input type="email" id="compEmail" class="input" placeholder="info@musterfirma.de"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Webseite</label><input type="text" id="compWebsite" class="input" placeholder="www.musterfirma.de"></div>
+</div>
+<div class="space-y-4">
+<h3 class="font-bold text-gray-700 border-b border-gray-200 pb-2">Steuer</h3>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Steuernummer *</label><input type="text" id="compSteuernummer" required class="input" inputmode="text" placeholder="123/456/78901"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Finanzamt</label><input type="text" id="compFinanzamt" class="input" placeholder="z.B. Finanzamt Musterstadt"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">USt-IdNr.</label><input type="text" id="compUstId" class="input" placeholder="DE123456789"></div>
+<div><label class="flex items-center cursor-pointer gap-2 mb-3"><input type="checkbox" id="compKleinunternehmer" onchange="toggleKleinunternehmer()"><span class="text-gray-700 font-semibold text-sm">Kleinunternehmer (§19 UStG)</span></label><p class="text-xs text-gray-400" id="compKleinunternehmerHint">Wenn aktiv, wird keine MwSt. auf Rechnungen ausgewiesen.</p></div>
+<p class="text-xs text-gray-400">Bankverbindungen werden weiter unten im Bereich <strong>Bankverbindungen</strong> verwaltet.</p>
+<input type="hidden" id="compBank"><input type="hidden" id="compIBAN"><input type="hidden" id="compBIC">
+</div>
+</div>
+<div class="mt-4 p-4 bg-gray-50 rounded-xl space-y-3">
+<h3 class="font-bold text-gray-700 text-sm">&#128196; Rechnungen &amp; Angebote</h3>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Standard-MwSt.-Satz</label><select id="compDefaultVat" class="input"><option value="0.19">19%</option><option value="0.07">7%</option><option value="0">0% (befreit)</option></select></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Zahlungsziel (Tage)</label><input type="number" id="compZahlungsziel" min="1" max="90" value="14" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Rechnungsnr.-Pr&#228;fix</label><input type="text" id="compInvPrefix" class="input" placeholder="RE-"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Angebotsnr.-Pr&#228;fix</label><input type="text" id="compOfferPrefix" class="input" placeholder="AN-"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Schlusstext auf Rechnungen</label><textarea id="compInvFooterText" rows="2" class="input"></textarea></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Schlusstext auf Angeboten</label><textarea id="compOfferFooterText" rows="2" class="input"></textarea></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail Betreff Angebot</label><input type="text" id="compOfferMailSubject" class="input" placeholder="Angebot {{nummer}} von {{firma}}"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail Betreff Rechnung</label><input type="text" id="compInvoiceMailSubject" class="input" placeholder="Rechnung {{nummer}} von {{firma}}"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail Text Angebot <span class="text-gray-400 font-normal">(Fallback ohne Outlook)</span></label><textarea id="compOfferMailBody" rows="3" class="input"></textarea></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail Text Rechnung <span class="text-gray-400 font-normal">(Fallback ohne Outlook)</span></label><textarea id="compInvoiceMailBody" rows="3" class="input"></textarea></div>
+</div>
+</div>
+<div class="mt-4 p-4 bg-gray-50 rounded-xl space-y-3">
+<h3 class="font-bold text-gray-700 text-sm">&#9888;&#65039; Mahnwesen</h3>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Mahngebühr Stufe 1 (EUR)</label><input type="number" id="compDunningFee1" step="0.01" min="0" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Mahngebühr Stufe 2 (EUR)</label><input type="number" id="compDunningFee2" step="0.01" min="0" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Mahngebühr Stufe 3 (EUR)</label><input type="number" id="compDunningFee3" step="0.01" min="0" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Verzugszins p.a. (%)</label><input type="number" id="compDunningInterestRate" step="0.01" min="0" class="input"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Wartezeit bis Stufe 2 (Tage)</label><input type="number" id="compDunningWait2" min="0" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Wartezeit bis Stufe 3 (Tage)</label><input type="number" id="compDunningWait3" min="0" class="input"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Neue Zahlungsfrist Stufe 1 (Tage)</label><input type="number" id="compDunningNewDays1" min="1" value="10" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Neue Zahlungsfrist Stufe 2 (Tage)</label><input type="number" id="compDunningNewDays2" min="1" value="7" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Neue Zahlungsfrist Stufe 3 (Tage)</label><input type="number" id="compDunningNewDays3" min="1" value="5" class="input"></div>
+</div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">E-Mail Betreff Mahnung</label><p class="text-xs text-gray-400 mb-1">Platzhalter: {{stufe}}, {{nummer}}, {{firma}}</p><input type="text" id="compDunningMailSubject" class="input" placeholder="Mahnung Stufe {{stufe}} – Rechnung {{nummer}}"></div>
+</div>
+<div class="mt-6 rounded-xl border border-gray-200 overflow-hidden">
+<div class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-cyan-50 to-white border-b border-gray-100">
+<div><h3 class="font-bold text-gray-800 text-sm">&#127970; Bankverbindungen</h3><p class="text-xs text-gray-500 mt-0.5">Je Rechnung individuell w&#228;hlbar &middot; Erscheint mit Abschnitt auf dem Dokument</p></div>
+<button type="button" onclick="showAddBankAccountForm()" class="btn btn-primary btn-sm">+ Bankverbindung</button>
+</div>
+<div class="p-4 bg-white">
+<div id="bankAccountsList"></div>
+<div id="bankAccountForm" style="display:none" class="mt-3 p-4 bg-cyan-50 border border-cyan-200 rounded-xl">
+<h4 class="font-bold text-gray-700 text-sm mb-3">Neue Bankverbindung anlegen</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+<div><label class="block text-gray-600 text-xs font-semibold mb-1">Bezeichnung</label><input type="text" id="baLabel" class="input" placeholder="z.B. Hauptkonto, Gesch&#228;ftskonto"></div>
+<div><label class="block text-gray-600 text-xs font-semibold mb-1">Bankname</label><input type="text" id="baBank" class="input" placeholder="Sparkasse Musterstadt"></div>
+</div>
+<div class="mb-3"><label class="block text-gray-600 text-xs font-semibold mb-1">Kontoinhaber</label><input type="text" id="baOwner" class="input" placeholder="z.B. Max Mustermann / Firmenname"></div>
+<div class="mb-3"><label class="block text-gray-600 text-xs font-semibold mb-1">IBAN *</label><input type="text" id="baIban" class="input" placeholder="DE89 3704 0044 0532 0130 00" style="font-family:monospace;letter-spacing:.04em"></div>
+<div class="mb-4"><label class="block text-gray-600 text-xs font-semibold mb-1">BIC</label><input type="text" id="baBic" class="input" placeholder="COBADEFFXXX"></div>
+<div class="flex gap-2"><button type="button" onclick="addBankAccount()" class="btn btn-primary btn-sm">&#10003; Speichern</button><button type="button" onclick="hideBankAccountForm()" class="btn btn-secondary btn-sm">Abbrechen</button></div>
+</div>
+</div>
+</div>
+<div class="mt-4 p-4 bg-gray-50 rounded-xl space-y-3">
+<h3 class="font-bold text-gray-700 text-sm">&#128231; E-Mail &amp; Google Drive</h3>
+<p class="text-xs text-gray-500">PDF-Rechnungen werden automatisch im angegebenen Ordner gespeichert und per Outlook versendet.</p>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Google Drive Pfad</label><div class="flex gap-2"><input type="text" id="compGoogleDrivePath" class="input flex-1" placeholder="z.B. C:\Users\alex\Google Drive\WerkmeisterPro" readonly><button type="button" class="btn btn-secondary btn-sm" onclick="selectGoogleDriveFolder()">Ordner w&#228;hlen</button></div><p class="text-xs text-gray-400 mt-1">PDFs werden in [Pfad]\Rechnungen\ gespeichert und als Anhang in Outlook eingef&#252;gt.</p></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Absender E-Mail (Outlook)</label><input type="email" id="compSenderEmail" class="input" placeholder="mail@meinefirma.de"></div>
+</div>
+<div class="mt-4 p-4 bg-gray-50 rounded-xl space-y-3">
+<h3 class="font-bold text-gray-700 text-sm">&#129302; KI-Assistent</h3>
+<p class="text-xs text-gray-500">Der API-Key wird lokal auf Ihrem Gerät gespeichert und nur für die Textverbesserung bei Rechnungspositionen verwendet.</p>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">OpenAI API-Key</label><input type="password" id="compAiApiKey" class="input" placeholder="sk-proj-..."></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">KI-Prompt: Textverbesserung (Rechnungen &amp; Auftr&#228;ge)</label><p class="text-xs text-gray-400 mb-1">Platzhalter: {{titel}} und {{beschreibung}} werden durch den eingegebenen Text ersetzt.</p><textarea id="compAiPromptImprove" rows="3" class="input" placeholder="Verbessere den folgenden Text einer Rechnungsposition f&#252;r einen Handwerksbetrieb. Mache ihn professionell, klar und pr&#228;zise. &#196;ndere die inhaltliche Bedeutung nicht."></textarea></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">KI-Prompt: Pr&#252;fung Rechnungspositionen (System-Prompt)</label><textarea id="compAiPromptCheckInvoice" rows="3" class="input" placeholder="Du bist ein erfahrener Handwerksmeister und Rechnungspr&#252;fer. Pr&#252;fe die Rechnungspositionen auf Vollst&#228;ndigkeit, Klarheit und Professionalit&#228;t..."></textarea></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">KI-Prompt: Pr&#252;fung Auftragsleistungen (System-Prompt)</label><textarea id="compAiPromptCheckOrder" rows="3" class="input" placeholder="Du bist ein erfahrener Handwerksmeister und Auftragsberater. Pr&#252;fe die Leistungspositionen auf Vollst&#228;ndigkeit, Klarheit und Professionalit&#228;t..."></textarea></div>
+</div>
+<div class="flex gap-3 mt-6"><button type="submit" class="btn btn-primary">Firmendaten speichern</button><span id="companySaveMsg" class="text-green-600 font-semibold text-sm hidden self-center">Gespeichert!</span></div>
+</form>
+</div>
+</div>
+<div class="card mb-6 settings-tab-panel hidden" data-settings-tab="letter">
+<div class="settings-flat-head" id="settingsAnchorLetter"><h2>Briefpapierlayout</h2></div>
+<div id="settingsLetterBody" class="settings-panel-body">
+<p class="settings-section-sub">Design für PDF-Dokumente: Layout wählen, Farben festlegen, Vorschau prüfen oder eigenen Briefkopf als PDF verwenden.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Layout</label><select id="compLetterLayout" class="input" onchange="renderLetterheadPreview()"><option value="modern">Modern Pro</option><option value="classic">Classic Business</option><option value="minimal">Minimal Elegant</option><option value="premium">Premium Gold</option></select></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Primärfarbe</label><input type="color" id="compLetterPrimary" class="input" style="height:40px;padding:4px" onchange="renderLetterheadPreview()"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Sekundärfarbe</label><input type="color" id="compLetterSecondary" class="input" style="height:40px;padding:4px" onchange="renderLetterheadPreview()"></div>
+</div>
+<div class="flex flex-wrap items-center gap-2 mb-4">
+<button type="button" class="btn btn-secondary btn-sm" onclick="applyLogoColorsToLetterTheme(true)">Farben aus Logo</button>
+<div class="text-xs text-gray-500">Diese Farben werden auch für Rechnungen verwendet.</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Briefkopf als PDF</label>
+<input type="file" id="compLetterPdfFile" accept="application/pdf" class="input" onchange="handleLetterheadPdfUpload(event)">
+<div class="mt-2 flex items-center gap-3">
+<div id="compLetterPdfInfo" class="text-xs text-gray-500"></div>
+<button type="button" id="compLetterPdfClearBtn" class="btn btn-secondary btn-sm hidden" onclick="clearLetterheadPdf()">PDF entfernen</button>
+</div>
+</div>
+<div>
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Inhalt startet ab (mm)</label>
+<input type="number" id="compLetterContentTop" min="10" max="120" step="1" class="input" onchange="renderLetterheadPreview()">
+</div>
+</div>
+<div id="letterheadPreview" class="letter-preview"></div>
+<div class="mt-3"><button type="button" class="btn btn-primary" onclick="saveCompanySettings()">Briefpapier speichern</button></div>
+</div>
+</div>
+<div class="card mb-6 settings-tab-panel hidden" data-settings-tab="users">
+<div class="settings-flat-head" id="settingsAnchorUsers"><h2>Benutzerverwaltung</h2><span class="badge badge-cyan">Nur Admin</span></div>
+<div id="settingsUsersBody" class="settings-panel-body">
+<p class="settings-section-sub">Benutzer anlegen, Rollen vergeben und Passwörter verwalten.</p>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+<div class="flex gap-2">
+<span class="text-xs px-3 py-1 rounded-full bg-red-100 text-red-700 font-semibold">Admin = alles</span>
+<span class="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold">Mitarbeiter = Aufträge &amp; Kunden</span>
+<span class="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold">Buchhaltung = Finanzen</span>
+</div>
+<button class="btn btn-primary" onclick="showUserModal()">+ Neuer Benutzer</button>
+</div>
+<div id="usersList" class="space-y-3"></div>
+</div>
+</div>
+</div>
+<div id="gobdMasterArea" style="display:none" class="settings-tab-panel hidden" data-settings-tab="users"><div class="card mb-6" style="border:2px solid #dc2626;background:linear-gradient(135deg,#fef2f2,#fff)"><div class="settings-flat-head"><h2 style="color:#991b1b">GoBD Master-Bereich</h2></div><div id="settingsGobdBody" class="settings-panel-body"><p class="settings-section-sub">Sensible Sonderfunktionen nur für Master-Admin mit Audit-Auswertung.</p><div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white font-bold text-lg">M</div><div><h2 class="text-2xl font-bold text-red-800">GoBD Master-Bereich</h2><p class="text-red-600 text-sm">Nur sichtbar für Master-Admin. Alle Aktionen werden protokolliert.</p></div></div><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div class="p-4 bg-white rounded-xl border border-gray-200"><h3 class="font-bold text-gray-800 mb-2">GoBD-Regeln</h3><ul class="text-sm text-gray-600 space-y-1"><li>&#10003; Rechnungen sind nach Erstellung gesperrt</li><li>&#10003; Lückenlose Nummernkreise</li><li>&#10003; Änderungsprotokoll (Audit-Trail)</li><li>&#10003; Storno statt Löschen für normale Nutzer</li><li>&#10003; 10 Jahre Aufbewahrungspflicht</li></ul></div><div class="p-4 bg-white rounded-xl border border-gray-200"><h3 class="font-bold text-gray-800 mb-2">Master-Rechte</h3><ul class="text-sm text-gray-600 space-y-1"><li>&#9888; Rechnungsnummern ändern</li><li>&#9888; Rechnungen stornieren</li><li>&#9888; Rechnungen spurlos löschen</li><li>&#9888; Keine Protokollierung</li><li>&#9888; Volle Kontrolle über Daten</li></ul></div><div class="p-4 bg-white rounded-xl border border-gray-200"><h3 class="font-bold text-gray-800 mb-2">Statistik</h3><div class="text-sm text-gray-600 space-y-1"><div id="gobdStatRechnungen">Rechnungen: -</div><div id="gobdStatStorniert">Storniert: -</div><div id="gobdStatAudit">Audit-Einträge: -</div></div></div></div><div><div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg text-gray-800">Audit-Log (letzte 50)</h3><button class="btn btn-secondary btn-sm" onclick="loadAuditLog();renderAuditLog();updateGobdStats()">Aktualisieren</button></div><div id="auditLogList"><p class="text-gray-500 text-center py-8">Keine Einträge</p></div></div></div></div></div>
+<div class="card settings-tab-panel hidden" data-settings-tab="update">
+<div class="settings-flat-head"><h2>&#128640; Update einspielen</h2><span class="badge badge-green">Entwickler</span></div>
+<div style="padding:1rem 0">
+  <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem">
+    <h3 style="font-weight:800;color:#14532d;margin-bottom:.5rem">&#128161; So funktioniert das Update</h3>
+    <p style="color:#166534;font-size:.9rem;line-height:1.6">
+      1. Programmiere deine Änderungen im <strong>DEV-Ordner</strong><br>
+      2. Teste alles mit <code style="background:#bbf7d0;padding:2px 6px;border-radius:4px">npm run dev</code><br>
+      3. Wenn alles passt → klicke unten auf <strong>"Update einspielen"</strong><br>
+      4. Die neue Version wird automatisch ins Produktionsprogramm kopiert
+    </p>
+  </div>
+  <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem">
+    <h3 style="font-weight:700;color:#0f172a;margin-bottom:1rem">Pfade konfigurieren</h3>
+    <div style="margin-bottom:1rem">
+      <label style="display:block;font-size:.85rem;font-weight:600;color:#475569;margin-bottom:.4rem">DEV-Ordner (Quelle)</label>
+      <input type="text" id="updateDevPath" class="input" placeholder="C:\Handwerker Programm\werkmeister-pro-dev\werkmeister-pro\src\index.html" style="font-family:monospace;font-size:.82rem">
+    </div>
+    <div>
+      <label style="display:block;font-size:.85rem;font-weight:600;color:#475569;margin-bottom:.4rem">PROD-Ordner (Ziel)</label>
+      <input type="text" id="updateProdPath" class="input" placeholder="C:\Handwerker Programm\werkmeister-pro-v2\werkmeister-pro\src\index.html" style="font-family:monospace;font-size:.82rem">
+    </div>
+  </div>
+  <div id="updateStatusMsg" style="display:none;padding:1rem;border-radius:10px;margin-bottom:1rem;font-weight:600"></div>
+  <button class="btn btn-primary" onclick="doUpdate()" style="font-size:1rem;padding:1rem 2rem">
+    &#128640; Update jetzt einspielen
+  </button>
+</div>
+</div>
+
+<div class="card settings-tab-panel hidden" data-settings-tab="password">
+<div class="settings-flat-head" id="settingsAnchorPassword"><h2>Mein Passwort ändern</h2></div>
+<div id="settingsPwdBody" class="settings-panel-body"><p class="settings-section-sub">Passwort sicher aktualisieren. Änderungen wirken sofort für deinen Login.</p><form onsubmit="changeOwnPassword(event)" class="max-w-md space-y-4"><div><label class="block text-gray-700 font-semibold mb-2">Neues Passwort</label><input type="password" id="newOwnPassword" required minlength="3" class="input"></div><div><label class="block text-gray-700 font-semibold mb-2">Bestätigen</label><input type="password" id="confirmOwnPassword" required class="input"></div><button type="submit" class="btn btn-primary">Ändern</button></form></div>
+</div>
+
+<div class="card settings-tab-panel hidden" data-settings-tab="import">
+<div class="settings-flat-head"><h2>&#128229; Daten importieren</h2><span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #fed7aa">JSON-Import</span></div>
+<div class="settings-panel-body">
+<p class="settings-section-sub">Importiere Rechnungen, Kunden, Aufträge und mehr aus einer WerkmeisterPro JSON-Datei. Vorhandene Einträge (gleiche ID) werden nicht überschrieben. Vor dem Import wird automatisch eine Sicherung angelegt.</p>
+<div class="mt-6 max-w-xl">
+<div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+<div class="flex gap-3 items-start"><div class="text-2xl">&#9888;&#65039;</div><div><div class="font-semibold text-amber-800 mb-1">Hinweis</div><div class="text-sm text-amber-700">Importierte Datensätze erhalten das Kennzeichen <strong>Importiert</strong> und sind in Rechnungen, Kunden und Aufträgen farblich markiert. Die Originaldaten werden nicht verändert – nur neue Einträge werden hinzugefügt.</div></div></div>
+</div>
+<button type="button" onclick="importJson()" class="btn btn-primary" style="background:linear-gradient(135deg,#ea580c,#c2410c);font-size:1rem;padding:.75rem 2rem">&#128229; JSON importieren</button>
+<div id="importResult" class="mt-6 hidden"></div>
+</div>
+</div>
+</div>
+
+<div class="card settings-tab-panel hidden" data-settings-tab="datenpfad">
+<div class="settings-flat-head"><h2>&#128193; Datenspeicher</h2><span class="badge badge-cyan">Speicherort</span></div>
+<div class="settings-panel-body">
+<p class="settings-section-sub">Lege fest, wo die App ihre Daten speichert. Du kannst einen Google Drive Ordner oder einen anderen Speicherort w&#228;hlen. Die Datei <strong>daten.json</strong> wird dort abgelegt und automatisch gelesen.</p>
+<div class="mt-4 max-w-2xl">
+<div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5">
+<div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Aktueller Speicherort</div>
+<div id="currentDataPath" class="font-mono text-sm text-gray-700 break-all">Wird geladen&#8230;</div>
+</div>
+<button type="button" onclick="changeDataPath()" class="btn btn-primary" style="font-size:1rem;padding:.75rem 2rem">&#128193; Datenpfad &#228;ndern</button>
+<div id="datenpfadResult" class="mt-5 hidden"></div>
+</div>
+</div>
+</div>
+
+<!-- GITHUB SYNC TAB -->
+<div class="card mb-6 settings-tab-panel hidden" data-settings-tab="gitsync">
+<div class="settings-flat-head"><h2>&#9729; GitHub Sync</h2><span class="badge badge-cyan">Cloud-Backup</span></div>
+<div class="settings-panel-body">
+<p class="settings-section-sub">Daten werden automatisch in einem GitHub Gist gesichert und ger&auml;te&uuml;bergreifend synchronisiert. Du ben&ouml;tigst einen GitHub-Account und ein pers&ouml;nliches Zugriffstoken (PAT) mit <strong>gist</strong>-Berechtigung.</p>
+<form id="gistSettingsForm" onsubmit="saveGistSettings(event)" class="max-w-xl space-y-5 mt-4">
+<div>
+  <label class="block text-gray-700 font-semibold mb-2 text-sm">Gist ID</label>
+  <input type="text" id="gistIdInput" class="input font-mono" placeholder="z.B. 4ee770dd4f9bdb9ca0dc88b2d1c1c8da">
+  <p class="text-xs text-gray-500 mt-1">Die ID aus der Gist-URL: gist.github.com/<em>username</em>/<strong>ID</strong></p>
+</div>
+<div>
+  <label class="block text-gray-700 font-semibold mb-2 text-sm">GitHub Token (PAT)</label>
+  <input type="password" id="gistTokenInput" class="input font-mono" placeholder="ghp_&#8230;">
+  <p class="text-xs text-gray-500 mt-1">Erstellen unter: github.com &#8594; Settings &#8594; Developer settings &#8594; Personal access tokens &#8594; Tokens (classic) &#8594; Scope: <strong>gist</strong></p>
+</div>
+<div id="gistSettingsResult"></div>
+<div class="flex gap-3 flex-wrap">
+  <button type="submit" class="btn btn-primary">&#10003; Speichern &amp; verbinden</button>
+  <button type="button" onclick="clearGistSettings()" class="btn btn-secondary">&#10005; Sync deaktivieren</button>
+</div>
+<div class="mt-5 pt-5 border-t border-gray-200 space-y-4">
+  <div class="text-sm font-semibold text-gray-700 mb-1">Daten synchronisieren</div>
+  <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+    <div class="font-semibold text-blue-800 text-sm mb-1">&#8595; Daten aus Gist laden</div>
+    <p class="text-xs text-blue-700 mb-3">Holt alle Daten aus dem Gist und ersetzt den lokalen Speicher. Nutze dies beim ersten Start auf einem neuen Gerät.</p>
+    <button type="button" onclick="loadFromGistNow()" class="btn btn-primary">&#8595; Jetzt aus Gist laden &amp; App neu starten</button>
+  </div>
+  <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+    <div class="font-semibold text-gray-700 text-sm mb-1">&#8593; Lokale Daten in Gist hochladen</div>
+    <p class="text-xs text-gray-500 mb-3">Falls im Gist &auml;ltere Daten stehen als lokal &ndash; lokale Datei in den Gist hochladen:</p>
+    <button type="button" onclick="pushLocalToGist()" class="btn btn-secondary">&#8593; Lokale Daten in Gist hochladen</button>
+  </div>
+</div>
+</form>
+</div>
+</div>
+
+<!-- E-MAIL EINSTELLUNGEN TAB -->
+<div class="card mb-6 settings-tab-panel hidden" data-settings-tab="email">
+<div class="settings-flat-head"><h2>&#9993; E-Mail Einstellungen</h2><span class="badge badge-cyan">Nur Admin</span></div>
+<div class="settings-panel-body">
+<p class="settings-section-sub">SMTP-Konfiguration f&#252;r den direkten E-Mail-Versand von Rechnungen und Mahnungen ohne Outlook.</p>
+<form id="smtpSettingsForm" onsubmit="saveSmtpSettings(event)" class="max-w-xl space-y-5 mt-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="md:col-span-2"><label class="block text-gray-700 font-semibold mb-2 text-sm">SMTP-Server</label><input type="text" id="smtpServer" class="input" placeholder="mail.dogado.de"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Port</label><input type="number" id="smtpPort" class="input" placeholder="587" min="1" max="65535"></div>
+</div>
+<div class="flex items-center gap-3">
+<label class="flex items-center cursor-pointer gap-2">
+<input type="checkbox" id="smtpSsl" onchange="">
+<span class="text-gray-700 font-semibold text-sm">SSL/TLS aktiviert</span>
+</label>
+<span class="text-xs text-gray-400">(Port 465 = SSL, Port 587 = STARTTLS)</span>
+</div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Absendername</label><input type="text" id="smtpFromName" class="input" placeholder="Tom&#x27;s Handwerkerservice"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Absender-Adresse (Von)</label><input type="email" id="smtpFrom" class="input" placeholder="toms.handerwerkerservice@gmail.com"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Antwort-Adresse (Reply-To) <span class="text-gray-400 font-normal">optional</span></label><input type="email" id="smtpReplyTo" class="input" placeholder="mail@toms-handwerkerservice.com"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Benutzername (Login)</label><input type="text" id="smtpUser" class="input" placeholder="deine@gmail.com" autocomplete="username"></div>
+<div>
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Passwort <span class="text-gray-400 font-normal">(wird verschl&#252;sselt gespeichert)</span></label>
+<div class="relative">
+<input type="password" id="smtpPassword" class="input pr-12" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679; (leer lassen um zu behalten)" autocomplete="new-password">
+<button type="button" id="smtpPasswordToggle" onclick="toggleSmtpPasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700" title="Passwort ein-/ausblenden">&#128065;</button>
+</div>
+<div id="smtpPasswordHint" class="hidden mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+<div class="flex items-center justify-between gap-3">
+<span class="text-xs text-gray-500">&#10003; Passwort gespeichert. Leer lassen um es zu behalten.</span>
+<button type="button" onclick="showStoredSmtpPassword()" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline">Pr&#252;fen</button>
+</div>
+<div id="smtpStoredPwDisplay" class="hidden mt-2 font-mono text-sm text-gray-800 bg-white border border-gray-200 rounded px-3 py-2 break-all"></div>
+</div>
+</div>
+<div class="flex flex-wrap gap-3 pt-2">
+<button type="submit" class="btn btn-primary">&#128190; Speichern</button>
+<button type="button" onclick="testSmtpConnection()" id="smtpTestBtn" class="btn btn-secondary">&#128268; Verbindung testen</button>
+<span id="smtpSaveMsg" class="text-green-600 font-semibold text-sm hidden self-center">&#10003; Gespeichert!</span>
+</div>
+<div id="smtpTestResult" class="hidden"></div>
+</form>
+</div>
+</div>
+
+</div>

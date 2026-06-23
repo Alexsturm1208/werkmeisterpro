@@ -1,0 +1,5 @@
+<div id="offers" class="app-section">
+<div class="flex items-center justify-between mb-8"><div><h1 class="text-4xl font-bold text-gray-800 mb-2">Angebote</h1><p class="text-gray-600">Erstelle und verwalte Angebote</p></div><button class="btn btn-primary" onclick="showOfferModal()">+ Neues Angebot</button></div>
+<div class="card mb-6"><div class="flex flex-wrap gap-3"><input type="text" id="offersSearchInput" class="input" style="max-width:320px" placeholder="Angebote suchen..." oninput="renderOffers()"><select id="offersObjectFilter" class="input" style="max-width:320px" onchange="renderOffers()"><option value="all">Alle Objekte</option></select><select id="offersStatusFilter" class="input" style="max-width:220px" onchange="renderOffers()"><option value="all">Alle Status</option><option value="open">Offen</option><option value="expired">Abgelaufen</option><option value="accepted">Angenommen</option><option value="rejected">Abgelehnt</option></select></div></div>
+<div class="card"><div id="offersList"><p class="text-gray-500 text-center py-12">Noch keine Angebote</p></div></div>
+</div>

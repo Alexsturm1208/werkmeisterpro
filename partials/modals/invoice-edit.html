@@ -1,0 +1,34 @@
+<div id="invoiceEditModal" class="modal"><div class="modal-content" style="max-width:900px"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="invoiceEditModalTitle" style="color:#b45309">Rechnung bearbeiten</h2><button onclick="hideInvoiceEditModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="invoiceEditForm" onsubmit="saveInvoiceEdit(event)"><input type="hidden" id="ieId">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Rechnungsnummer</label><input type="text" id="ieNumber" class="input" placeholder="z.B. 20260001 oder RE-260618-1"><div id="ieNumFormatRow" class="flex gap-3 mt-2" style="display:none"><label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer"><input type="radio" name="ieNumFormat" value="standard" onchange="onIeNumFormatChange()"><span>Standard (JahrNNNN)</span></label><label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer"><input type="radio" name="ieNumFormat" value="re" onchange="onIeNumFormatChange()"><span>RE-Nummer (datumsbasiert)</span></label></div></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Objekt</label><input type="text" id="ieObject" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Rechnungsdatum</label><input type="date" id="ieIssueDate" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">F&#228;llig</label><div class="flex gap-2"><select id="ieDueDateMode" class="input" style="min-width:130px;flex:0 0 130px" onchange="toggleIeDueDateMode()"><option value="date">Datum</option><option value="sofort">Sofort</option></select><input type="date" id="ieDueDate" class="input flex-1"></div></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Leistungsdatum <span class="text-gray-400 font-normal">(BT-72)</span></label><div class="flex gap-2"><input type="date" id="ieServiceDateFrom" class="input" placeholder="von"><input type="date" id="ieServiceDateTo" class="input" placeholder="bis (optional)"></div></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">Bestell-Nr. Kunde <span class="text-gray-400 font-normal">(BT-13)</span></label><input type="text" id="ieBestellnummer" class="input" placeholder="optional"></div>
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">K&auml;ufer-Referenz <span class="text-gray-400 font-normal">(BT-10, Pflicht XRechnung)</span></label><input type="text" id="ieBuyerReference" class="input" placeholder="z. B. Kundennummer"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div><label class="block text-gray-700 font-semibold mb-2 text-sm">MwSt.-Satz</label><select id="ieVatRate" class="input" onchange="var id=document.getElementById('ieId').value;var inv=invoices.find(function(i){return i.id===id});if(inv){inv.vatRate=parseFloat(this.value);recalcInvoice(inv);updateIeTotals(inv);saveDataSoon()}"><option value="0.19">19%</option><option value="0.07">7%</option><option value="0">0% (befreit)</option></select></div>
+<div><label class="flex items-center cursor-pointer gap-2 mt-6"><input type="checkbox" id="ieKleinunternehmer" onchange="toggleIeKU();var id=document.getElementById('ieId').value;var inv=invoices.find(function(i){return i.id===id});if(inv){inv.kleinunternehmer=this.checked;inv.vatRate=this.checked?0:0.19;recalcInvoice(inv);updateIeTotals(inv);saveDataSoon()}"><span class="text-gray-700 font-semibold text-sm">Kleinunternehmer (&#167;19)</span></label><p id="ieKUHint" class="text-xs text-amber-600 mt-1" style="display:none">Keine MwSt. auf dieser Rechnung</p></div>
+</div>
+
+<div class="mb-4">
+<label class="block text-gray-700 font-semibold mb-2 text-sm">Bankverbindung f&#252;r diese Rechnung</label>
+<select id="ieBankAccountId" class="input" onchange="updateIeBankAccount(document.getElementById('ieId').value,this.value)"><option value="">-- Keine --</option></select>
+</div>
+<div class="mb-4">
+<div class="flex items-center justify-between mb-3"><h3 class="font-bold text-lg text-gray-800">Positionen</h3><div class="flex gap-2"><button type="button" id="ieKiBtn" onclick="runKiPruefungInvoice(document.getElementById('ieId').value)" class="btn btn-secondary btn-sm">&#10024; KI-Pr&#252;fung</button><button type="button" onclick="addIeLine(document.getElementById('ieId').value)" class="btn btn-primary btn-sm">+ Position</button></div></div>
+<div class="text-xs text-gray-400 grid grid-cols-12 gap-2 mb-2 px-1"><div class="col-span-1 text-center">#</div><div class="col-span-5">Bezeichnung</div><div class="col-span-2">Menge</div><div class="col-span-2">Einzelpreis</div><div class="col-span-2 text-right">Gesamt</div></div>
+<div id="ieLinesList"></div>
+<div id="ieKiResult"></div>
+</div>
+
+<div class="flex justify-end mb-6"><div class="w-64 bg-gray-50 rounded-xl p-4" id="ieTotals"></div></div>
+
+<div class="flex flex-wrap gap-3"><button type="submit" id="ieSaveBtn" class="btn btn-primary" style="background:linear-gradient(135deg,#d97706,#b45309)">Speichern</button><button type="button" id="ieFinalizeBtn" onclick="finalizeInvoice(document.getElementById('ieId').value)" class="btn btn-primary">Finalisieren &amp; Nummer vergeben</button><button type="button" onclick="hideInvoiceEditModal()" class="btn btn-secondary">Schlie&#223;en</button></div>
+</form></div></div></div>

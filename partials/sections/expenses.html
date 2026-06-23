@@ -1,0 +1,14 @@
+<div id="expenses" class="app-section">
+<div class="flex items-center justify-between mb-8">
+<div><h1 class="text-4xl font-bold text-gray-800 mb-2">Ausgaben</h1><p class="text-gray-600">Belege importieren und Positionen erfassen</p></div>
+<label for="expenseFileInput" class="btn btn-primary" style="cursor:pointer">+ Beleg auswählen</label>
+</div>
+<div class="card mb-6">
+<input type="file" id="expenseFileInput" multiple accept="application/pdf,image/*" onchange="handleExpenseFileInput(event)" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+<label id="expenseDropZone" for="expenseFileInput" class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50" style="cursor:pointer;display:block">
+<div class="text-gray-800 font-semibold mb-1">Belege hierher ziehen</div>
+<div class="text-sm text-gray-500">PDF, JPG, PNG</div>
+</label>
+</div>
+<div class="card"><div id="expensesList"><p class="text-gray-500 text-center py-12">Noch keine Ausgaben.</p></div></div>
+</div>

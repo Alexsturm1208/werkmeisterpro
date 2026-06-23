@@ -1,0 +1,30 @@
+<div id="orderModal" class="modal"><div class="modal-content"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="orderModalTitle">Neuer Auftrag</h2><button onclick="hideOrderModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="orderForm" onsubmit="saveOrder(event)"><input type="hidden" id="orderId"><input type="hidden" id="orderEntityType" value="order">
+<div class="grid grid-cols-1 gap-5">
+<div><label class="block text-gray-700 font-semibold mb-2">Kunde *</label><div class="flex gap-2"><select id="orderCustomerSelect" required class="input flex-1" onchange="onCustomerSelected()"><option value="">-- Kunde --</option></select><button type="button" onclick="openNewCustomerFromOrder()" class="btn btn-secondary btn-sm">+ Neu</button></div><p id="orderCustomerInfo" class="text-sm text-gray-500 mt-2 hidden"></p></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Objekt *</label><input type="text" id="orderObject" required class="input" placeholder="z.B. Einfamilienhaus"></div>
+<div id="orderPrepaymentsSection"><label class="block text-gray-700 font-semibold mb-2">Vorauszahlungen (bereits gezahlt)</label><div id="orderPrepaymentsList" class="space-y-2"></div><div class="flex flex-wrap items-center justify-between gap-3 mt-2"><button type="button" class="btn btn-secondary btn-sm" onclick="addOrderPrepaymentRow()">+ Vorauszahlung</button><div id="orderPrepaymentsSummary" class="text-xs text-gray-500"></div></div><div class="text-xs text-gray-400 mt-1">Beträge als Brutto erfassen.</div></div>
+<div><label class="flex items-center cursor-pointer gap-2"><input type="checkbox" id="orderKleinunternehmer" onchange="toggleOrderKU()"><span class="text-gray-700 font-semibold">Kleinunternehmerregelung (§19 UStG)</span></label><p id="orderKUHint" class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2" style="display:none">Gem. §19 UStG wird keine Umsatzsteuer ausgewiesen.</p></div>
+<div><label class="flex items-center cursor-pointer gap-2"><input type="checkbox" id="orderDifferentAddress" onchange="toggleOrderAddress()"><span class="text-gray-700 font-semibold">Abweichende Adresse</span></label></div>
+<div id="orderAddressFields" class="hidden"><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="md:col-span-3"><label class="block text-gray-700 font-semibold mb-2">Stra&szlig;e</label><input type="text" id="orderStreet" class="input"></div><div><label class="block text-gray-700 font-semibold mb-2">PLZ</label><input type="text" id="orderZip" class="input"></div><div class="md:col-span-2"><label class="block text-gray-700 font-semibold mb-2">Ort</label><input type="text" id="orderCity" class="input"></div></div></div>
+<div id="orderPhotoSection">
+<label class="block text-gray-700 font-semibold mb-2">Vorher-/Nachher-Bilder</label>
+<p class="text-xs text-gray-500 mb-3">Mobil: "Foto aufnehmen" öffnet die Kamera-App (wenn vom Gerät unterstützt).</p>
+<input type="file" id="orderPhotoInput" accept="image/*" class="hidden" onchange="handleOrderPhotoInputChange(event)">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+<div class="flex items-center justify-between mb-2"><h4 class="font-semibold text-gray-700">Vorher</h4><span id="orderBeforeCount" class="text-xs text-gray-500">0 Bilder</span></div>
+<div class="flex flex-wrap gap-2 mb-3"><button type="button" class="btn btn-secondary btn-sm" onclick="openOrderPhotoPicker('before',true)">Foto aufnehmen</button><button type="button" class="btn btn-secondary btn-sm" onclick="openOrderPhotoPicker('before',false)">Bild hochladen</button></div>
+<div id="orderBeforePhotos" class="order-photo-grid"></div>
+</div>
+<div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+<div class="flex items-center justify-between mb-2"><h4 class="font-semibold text-gray-700">Nachher</h4><span id="orderAfterCount" class="text-xs text-gray-500">0 Bilder</span></div>
+<div class="flex flex-wrap gap-2 mb-3"><button type="button" class="btn btn-secondary btn-sm" onclick="openOrderPhotoPicker('after',true)">Foto aufnehmen</button><button type="button" class="btn btn-secondary btn-sm" onclick="openOrderPhotoPicker('after',false)">Bild hochladen</button></div>
+<div id="orderAfterPhotos" class="order-photo-grid"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3 mt-8"><button type="submit" class="btn btn-primary">Speichern</button><button type="button" onclick="hideOrderModal()" class="btn btn-secondary">Abbrechen</button></div>
+</form></div></div></div>

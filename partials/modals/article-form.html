@@ -1,0 +1,14 @@
+<div id="articleModal" class="modal"><div class="modal-content"><div class="p-8">
+<div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold" id="articleModalTitle">Neuer Artikel</h2><button onclick="hideArticleModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button></div>
+<form id="articleForm" onsubmit="saveArticle(event)"><input type="hidden" id="articleId">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div><label class="block text-gray-700 font-semibold mb-2">Bezeichnung *</label><input type="text" id="articleTitle" required class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Artikelnummer</label><input type="text" id="articleSku" class="input"></div>
+<div class="md:col-span-2"><label class="block text-gray-700 font-semibold mb-2">Beschreibung</label><textarea id="articleDescription" rows="2" class="input"></textarea></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Kostenart</label><select id="articleCostType" class="input"><option value="position">Position</option><option value="material">Material</option></select></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Einheit</label><input type="text" id="articleUnit" class="input" placeholder="z. B. Stk, m&#178;, Std"></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Standard-Menge</label><input type="number" id="articleQuantity" step="0.01" min="0" value="1" class="input"></div>
+<div><label class="block text-gray-700 font-semibold mb-2">Standard-Preis &#8364;</label><input type="number" id="articlePrice" step="0.01" min="0" value="0" class="input"></div>
+</div>
+<div class="flex gap-3 mt-8"><button type="submit" class="btn btn-primary">Speichern</button><button type="button" onclick="hideArticleModal()" class="btn btn-secondary">Abbrechen</button></div>
+</form></div></div></div>

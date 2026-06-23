@@ -1,0 +1,10 @@
+<div id="dashboard" class="app-section active">
+<div class="mb-8"><h1 class="text-4xl font-bold text-gray-800 mb-2">Willkommen zur&#252;ck!</h1><p class="text-gray-600">Hier ist deine &#220;bersicht</p></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">Umsatz</div><div class="stat-number"><span id="stat-revenue">0</span> &#8364;</div><div class="stat-trend">Netto</div></div>
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">Auftr&#228;ge</div><div class="stat-number"><span id="stat-orders">0</span></div><div class="stat-trend">Gesamt</div></div>
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">Kunden</div><div class="stat-number"><span id="stat-customers">0</span></div><div class="stat-trend">Gesamt</div></div>
+<div class="stat-card"><div class="text-sm font-semibold text-gray-600 mb-1">MwSt. 19%</div><div class="stat-number"><span id="stat-tax">0</span> &#8364;</div><div class="stat-trend">Monat</div></div>
+</div>
+<div class="card mb-6"><div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold text-gray-800">Letzte Auftr&#228;ge</h2><button class="btn btn-primary btn-sm" onclick="showSection('orders')">Alle ansehen &#8594;</button></div><div id="dashboard-recent-orders"><p class="text-gray-500 text-center py-8">Noch keine Auftr&#228;ge</p></div></div>
+</div>
